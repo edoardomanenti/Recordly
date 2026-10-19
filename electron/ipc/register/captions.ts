@@ -1,5 +1,6 @@
 import path from "node:path";
 import { dialog, ipcMain } from "electron";
+import { type AutoCutDetectionMode, detectAutoCutIntervals } from "../autoCut/detect";
 import { generateAutoCaptionsFromVideo } from "../captions/generate";
 import {
 	deleteWhisperSmallModel,
@@ -249,6 +250,21 @@ export function registerCaptionHandlers() {
 					error: String(error),
 					message:
 						error instanceof Error ? error.message : "Failed to generate auto captions",
+				};
+			}
+		},
+	);
+
+	ipcMain.handle(
+		"detect-auto-cut-intervals",
+		async (_, options: { videoPath: string; mode: AutoCutDetectionMode }) => {
+			try {
+				return { success: true, intervals: await detectAutoCutIntervals(options) };
+			} catch (error) {
+				console.error("Failed to detect auto-cut intervals:", error);
+				return {
+					success: false,
+					error: error instanceof Error ? error.message : String(error),
 				};
 			}
 		},

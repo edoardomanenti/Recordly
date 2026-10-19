@@ -137,7 +137,8 @@ export function registerSettingsHandlers() {
 			const parsed = await recordingPreferencesStore.read();
 			return {
 				success: true,
-				microphoneEnabled: parsed.microphoneEnabled === true,
+				// The microphone is on unless the user has turned it off.
+				microphoneEnabled: parsed.microphoneEnabled !== false,
 				microphoneDeviceId:
 					typeof parsed.microphoneDeviceId === "string"
 						? parsed.microphoneDeviceId
@@ -150,7 +151,7 @@ export function registerSettingsHandlers() {
 		} catch {
 			return {
 				success: true,
-				microphoneEnabled: false,
+				microphoneEnabled: true,
 				microphoneDeviceId: undefined,
 				systemAudioEnabled: false,
 				webcamEnabled: false,

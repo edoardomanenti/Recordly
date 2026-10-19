@@ -8,6 +8,7 @@ import { useEditorExportController } from "./export/useEditorExportController";
 import { useExportDimensions } from "./export/useExportDimensions";
 import { useExportSession } from "./export/useExportSession";
 import { useExportSettings } from "./export/useExportSettings";
+import { useFreshRecordingAutoCut } from "./hooks/useFreshRecordingAutoCut";
 import { useTimelineEditingController } from "./hooks/useTimelineEditingController";
 import { EditorShell } from "./layout/EditorShell";
 import { useEditorSettingsPanelProps } from "./layout/useEditorSettingsPanelProps";
@@ -86,6 +87,7 @@ export default function VideoEditor() {
 		nextAnnotationZIndexRef,
 		autoSuggestedVideoPathRef,
 		pendingFreshRecordingAutoZoomPathRef,
+		pendingFreshRecordingAutoCutPathRef,
 		pendingFreshRecordingAutoSuggestTimeoutRef,
 		pendingFreshRecordingAutoSuggestTelemetryCountRef,
 		timelineRef,
@@ -254,6 +256,7 @@ export default function VideoEditor() {
 		autoFullTrackClipIdRef,
 		autoFullTrackClipEndMsRef,
 		pendingFreshRecordingAutoZoomPathRef,
+		pendingFreshRecordingAutoCutPathRef,
 		pendingFreshRecordingAutoSuggestTelemetryCountRef,
 		autoSuggestedVideoPathRef,
 		applySessionPresentation,
@@ -314,6 +317,20 @@ export default function VideoEditor() {
 		annotationCommands,
 	} = editing;
 	const { effectiveSpeedRegions, effectiveZoomRegions } = projection;
+	const autoCut = useFreshRecordingAutoCut({
+		t,
+		mode: appearance.autoCutMode,
+		videoSourcePath,
+		loading,
+		isPreviewReady,
+		duration,
+		timeline,
+		clipInitializedRef,
+		nextClipIdRef,
+		autoFullTrackClipIdRef,
+		autoFullTrackClipEndMsRef,
+		pendingFreshRecordingAutoCutPathRef,
+	});
 
 	const exportController = useEditorExportController({
 		t,
@@ -378,6 +395,7 @@ export default function VideoEditor() {
 		setNativeCaptureUnavailableModalOpen,
 		handleUploadWebcam,
 		handleClearWebcam,
+		autoCut: { ...autoCut, canApply: Boolean(videoSourcePath) && duration > 0 },
 	});
 	return (
 		<EditorShell

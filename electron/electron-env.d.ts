@@ -747,6 +747,15 @@ interface Window {
 			message?: string;
 			error?: string;
 		}>;
+		/** Silences (speech mode) or still-screen stretches (activity mode); `endMs: null` runs to the end. */
+		detectAutoCutIntervals: (options: {
+			videoPath: string;
+			mode: "speech" | "activity";
+		}) => Promise<{
+			success: boolean;
+			intervals?: Array<{ startMs: number; endMs: number | null }>;
+			error?: string;
+		}>;
 		setCurrentVideoPath: (
 			path: string,
 			options?: {

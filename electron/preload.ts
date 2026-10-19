@@ -782,6 +782,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	}) => {
 		return ipcRenderer.invoke("generate-auto-captions", options);
 	},
+	detectAutoCutIntervals: (options: { videoPath: string; mode: "speech" | "activity" }) => {
+		return ipcRenderer.invoke("detect-auto-cut-intervals", options);
+	},
 	setCurrentVideoPath: (
 		path: string,
 		options?: {

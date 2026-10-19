@@ -37,6 +37,7 @@ type Input = {
 	setNativeCaptureUnavailableModalOpen: Dispatch<SetStateAction<boolean>>;
 	handleUploadWebcam: () => void;
 	handleClearWebcam: () => void;
+	autoCut: { applyAutoCut: () => void; isAutoCutting: boolean; canApply: boolean };
 };
 
 export function useEditorSettingsPanelProps(input: Input): ComponentProps<typeof SettingsPanel> {
@@ -111,6 +112,10 @@ export function useEditorSettingsPanelProps(input: Input): ComponentProps<typeof
 		onBackgroundBlurChange: appearance.setBackgroundBlur,
 		autoApplyFreshRecordingAutoZooms: appearance.autoApplyFreshRecordingAutoZooms,
 		onAutoApplyFreshRecordingAutoZoomsChange: appearance.setAutoApplyFreshRecordingAutoZooms,
+		autoCutMode: appearance.autoCutMode,
+		onAutoCutModeChange: appearance.setAutoCutMode,
+		onApplyAutoCut: input.autoCut.canApply ? input.autoCut.applyAutoCut : undefined,
+		isAutoCutting: input.autoCut.isAutoCutting,
 		connectZooms: appearance.connectZooms,
 		onConnectZoomsChange: appearance.setConnectZooms,
 		zoomInDurationMs: appearance.zoomInDurationMs,

@@ -258,5 +258,18 @@
 		"title": "Updates",
 		"experimental": "Experimentelle Updates",
 		"saveFailed": "Update-Kanal konnte nicht geändert werden."
+	},
+	"autoCut": {
+		"title": "Neue Aufnahmen automatisch schneiden",
+		"description": "Bei kommentierten Videos werden Sprechpausen entfernt. Bei Videos ohne Kommentar werden Momente entfernt, in denen auf dem Bildschirm nichts passiert.",
+		"modeOff": "Aus",
+		"modeSpeech": "Kommentiert",
+		"modeActivity": "Ohne Kommentar",
+		"applyNow": "Jetzt anwenden",
+		"applying": "Wird geschnitten…",
+		"timelineEdited": "Automatischer Schnitt funktioniert nur bei einer unbearbeiteten Zeitleiste. Mache deine Änderungen rückgängig und versuche es erneut.",
+		"nothingToCut": "Der automatische Schnitt hat nichts zum Entfernen gefunden.",
+		"applied": "Automatischer Schnitt hat {{count}} tote Momente entfernt ({{seconds}} s). Mit Rückgängig stellst du sie wieder her.",
+		"failed": "Automatischer Schnitt fehlgeschlagen: {{error}}"
 	}
 }

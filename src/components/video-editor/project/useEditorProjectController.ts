@@ -62,6 +62,7 @@ type Input = {
 	autoFullTrackClipIdRef: MutableRefObject<string | null>;
 	autoFullTrackClipEndMsRef: MutableRefObject<number | null>;
 	pendingFreshRecordingAutoZoomPathRef: MutableRefObject<string | null>;
+	pendingFreshRecordingAutoCutPathRef: MutableRefObject<string | null>;
 	pendingFreshRecordingAutoSuggestTelemetryCountRef: MutableRefObject<number>;
 	autoSuggestedVideoPathRef: MutableRefObject<string | null>;
 	applySessionPresentation: (
@@ -144,6 +145,7 @@ export function useEditorProjectController(input: Input) {
 		devConfig: input.devConfig,
 		videoSourcePath: input.videoSourcePath,
 		pendingFreshRecordingAutoZoomPathRef: input.pendingFreshRecordingAutoZoomPathRef,
+		pendingFreshRecordingAutoCutPathRef: input.pendingFreshRecordingAutoCutPathRef,
 		applyLoadedProject: lifecycle.applyLoadedProject,
 		resetSourceScopedEditorState: lifecycle.resetSourceScopedEditorState,
 		applySessionPresentation: input.applySessionPresentation,

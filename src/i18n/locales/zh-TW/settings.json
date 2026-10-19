@@ -258,5 +258,18 @@
 		"title": "更新",
 		"experimental": "實驗性更新",
 		"saveFailed": "無法變更更新頻道。"
+	},
+	"autoCut": {
+		"title": "自動剪輯新錄製",
+		"description": "有旁白的影片會剪掉語音中的停頓；無旁白的影片會剪掉螢幕上沒有任何變化的片段。",
+		"modeOff": "關閉",
+		"modeSpeech": "有旁白",
+		"modeActivity": "無旁白",
+		"applyNow": "立即套用",
+		"applying": "正在剪輯…",
+		"timelineEdited": "自動剪輯僅適用於未編輯的時間軸。請復原編輯後再試一次。",
+		"nothingToCut": "自動剪輯沒有找到可移除的內容。",
+		"applied": "自動剪輯移除了 {{count}} 個閒置片段（{{seconds}} 秒）。按復原即可還原。",
+		"failed": "自動剪輯失敗：{{error}}"
 	}
 }

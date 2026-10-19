@@ -258,5 +258,18 @@
 		"title": "Aggiornamenti",
 		"experimental": "Aggiornamenti sperimentali",
 		"saveFailed": "Impossibile cambiare il canale di aggiornamento."
+	},
+	"autoCut": {
+		"title": "Taglio automatico delle nuove registrazioni",
+		"description": "Nei video parlati vengono tagliate le pause della tua voce. Nei video non parlati vengono tagliati i momenti in cui sullo schermo non succede nulla.",
+		"modeOff": "Disattivato",
+		"modeSpeech": "Parlato",
+		"modeActivity": "Non parlato",
+		"applyNow": "Applica ora",
+		"applying": "Taglio in corso…",
+		"timelineEdited": "Il taglio automatico funziona solo su una timeline non ancora modificata. Annulla le modifiche e riprova.",
+		"nothingToCut": "Il taglio automatico non ha trovato nulla da rimuovere.",
+		"applied": "Il taglio automatico ha rimosso {{count}} momenti morti ({{seconds}}s). Premi Annulla per ripristinarli.",
+		"failed": "Taglio automatico non riuscito: {{error}}"
 	}
 }

@@ -258,5 +258,18 @@
 		"title": "Updates",
 		"experimental": "Experimentele updates",
 		"saveFailed": "Kan het updatekanaal niet wijzigen."
+	},
+	"autoCut": {
+		"title": "Nieuwe opnames automatisch knippen",
+		"description": "Bij ingesproken video's worden pauzes in je stem geknipt. Bij video's zonder gesproken tekst worden momenten geknipt waarin er niets op het scherm gebeurt.",
+		"modeOff": "Uit",
+		"modeSpeech": "Ingesproken",
+		"modeActivity": "Niet ingesproken",
+		"applyNow": "Nu toepassen",
+		"applying": "Bezig met knippen…",
+		"timelineEdited": "Automatisch knippen werkt alleen op een onbewerkte tijdlijn. Maak je bewerkingen ongedaan en probeer het opnieuw.",
+		"nothingToCut": "Automatisch knippen vond niets om te verwijderen.",
+		"applied": "Automatisch knippen heeft {{count}} dode momenten verwijderd ({{seconds}} s). Gebruik Ongedaan maken om ze terug te zetten.",
+		"failed": "Automatisch knippen mislukt: {{error}}"
 	}
 }

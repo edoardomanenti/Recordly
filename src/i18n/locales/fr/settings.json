@@ -258,5 +258,18 @@
 		"title": "Mises à jour",
 		"experimental": "Mises à jour expérimentales",
 		"saveFailed": "Impossible de changer le canal de mise à jour."
+	},
+	"autoCut": {
+		"title": "Couper automatiquement les nouveaux enregistrements",
+		"description": "Les vidéos commentées perdent les pauses de votre voix. Les vidéos sans commentaire perdent les moments où rien ne se passe à l’écran.",
+		"modeOff": "Désactivé",
+		"modeSpeech": "Commenté",
+		"modeActivity": "Sans commentaire",
+		"applyNow": "Appliquer maintenant",
+		"applying": "Découpage…",
+		"timelineEdited": "La coupe automatique ne fonctionne que sur une timeline non modifiée. Annulez vos modifications et réessayez.",
+		"nothingToCut": "La coupe automatique n’a rien trouvé à supprimer.",
+		"applied": "La coupe automatique a supprimé {{count}} temps morts ({{seconds}} s). Utilisez Annuler pour les restaurer.",
+		"failed": "Échec de la coupe automatique : {{error}}"
 	}
 }

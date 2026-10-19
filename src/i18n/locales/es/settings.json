@@ -258,5 +258,18 @@
 		"title": "Actualizaciones",
 		"experimental": "Actualizaciones experimentales",
 		"saveFailed": "No se pudo cambiar el canal de actualización."
+	},
+	"autoCut": {
+		"title": "Cortar automáticamente las nuevas grabaciones",
+		"description": "En los vídeos narrados se cortan las pausas de tu voz. En los vídeos sin narración se cortan los momentos en los que no pasa nada en pantalla.",
+		"modeOff": "Desactivado",
+		"modeSpeech": "Narrado",
+		"modeActivity": "Sin narración",
+		"applyNow": "Aplicar ahora",
+		"applying": "Cortando…",
+		"timelineEdited": "El corte automático solo funciona en una línea de tiempo sin editar. Deshaz tus cambios e inténtalo de nuevo.",
+		"nothingToCut": "El corte automático no encontró nada que quitar.",
+		"applied": "El corte automático quitó {{count}} momentos muertos ({{seconds}} s). Pulsa Deshacer para recuperarlos.",
+		"failed": "El corte automático falló: {{error}}"
 	}
 }

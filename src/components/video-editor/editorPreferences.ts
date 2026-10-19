@@ -1,4 +1,5 @@
 import { normalizeExportPreferences, type ExportPreferences } from "./exportPreferences";
+import { type AutoCutMode, DEFAULT_AUTO_CUT_MODE, isAutoCutMode } from "./autoCut";
 import { loadAppSetting, saveAppSetting } from "../../lib/appSettings";
 import {
 	getDefaultBorderRadiusPercent,
@@ -77,6 +78,7 @@ export interface EditorPreferences extends PersistedEditorControls, ExportPrefer
 	customAspectHeight: string;
 	customWallpapers: string[];
 	autoApplyFreshRecordingAutoZooms: boolean;
+	autoCutMode: AutoCutMode;
 	whisperExecutablePath: string | null;
 	whisperModelPath: string | null;
 }
@@ -131,6 +133,7 @@ export const DEFAULT_EDITOR_PREFERENCES: EditorPreferences = {
 	customAspectHeight: "9",
 	customWallpapers: [],
 	autoApplyFreshRecordingAutoZooms: true,
+	autoCutMode: DEFAULT_AUTO_CUT_MODE,
 	whisperExecutablePath: null,
 	whisperModelPath: null,
 };
@@ -405,6 +408,7 @@ export function normalizeEditorPreferences(
 			raw.autoApplyFreshRecordingAutoZooms,
 			fallback.autoApplyFreshRecordingAutoZooms,
 		),
+		autoCutMode: isAutoCutMode(raw.autoCutMode) ? raw.autoCutMode : fallback.autoCutMode,
 		whisperExecutablePath:
 			normalizeNullablePath(raw.whisperExecutablePath) ?? fallback.whisperExecutablePath,
 		whisperModelPath: normalizeNullablePath(raw.whisperModelPath) ?? fallback.whisperModelPath,

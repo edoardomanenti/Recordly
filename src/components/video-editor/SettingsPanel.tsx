@@ -34,6 +34,7 @@ import { useI18n, useScopedT } from "../../contexts/I18nContext";
 import type { AppLocale } from "../../i18n/config";
 import { SUPPORTED_LOCALES } from "../../i18n/config";
 import { AnnotationSettingsPanel } from "./AnnotationSettingsPanel";
+import { type AutoCutMode, isAutoCutMode } from "./autoCut";
 import CaptionListPanel from "./CaptionListPanel";
 import type { CaptionRetimeSpan } from "./captionOps";
 import {
@@ -457,6 +458,11 @@ interface SettingsPanelProps {
 	onConnectZoomsChange?: (enabled: boolean) => void;
 	autoApplyFreshRecordingAutoZooms?: boolean;
 	onAutoApplyFreshRecordingAutoZoomsChange?: (enabled: boolean) => void;
+	autoCutMode?: AutoCutMode;
+	onAutoCutModeChange?: (mode: AutoCutMode) => void;
+	/** Present only while a recording is open in the editor. */
+	onApplyAutoCut?: () => void;
+	isAutoCutting?: boolean;
 	zoomInDurationMs?: number;
 	onZoomInDurationMsChange?: (duration: number) => void;
 	zoomInOverlapMs?: number;
@@ -915,6 +921,10 @@ export function SettingsPanel({
 	onConnectZoomsChange,
 	autoApplyFreshRecordingAutoZooms = true,
 	onAutoApplyFreshRecordingAutoZoomsChange,
+	autoCutMode = "speech",
+	onAutoCutModeChange,
+	onApplyAutoCut,
+	isAutoCutting = false,
 	zoomInDurationMs = DEFAULT_ZOOM_IN_DURATION_MS,
 	onZoomInDurationMsChange,
 	zoomOutDurationMs = DEFAULT_ZOOM_OUT_DURATION_MS,
@@ -2273,6 +2283,55 @@ export function SettingsPanel({
 							<Button variant="secondary" size="sm" onClick={onShowOnboarding}>
 								Show onboarding
 							</Button>
+						</SettingsRow>
+					)}
+
+					{onAutoCutModeChange && (
+						<SettingsRow
+							title={tSettings("autoCut.title", "Auto-cut new recordings")}
+							description={tSettings(
+								"autoCut.description",
+								"Narrated videos cut the pauses in your voice. Videos without narration cut the moments where nothing happens on screen.",
+							)}
+							stacked
+						>
+							<div className="flex flex-col gap-2">
+								<ChoiceGroup
+									type="single"
+									aria-label={tSettings(
+										"autoCut.title",
+										"Auto-cut new recordings",
+									)}
+									value={autoCutMode}
+									onValueChange={(value) => {
+										if (isAutoCutMode(value)) onAutoCutModeChange(value);
+									}}
+									fullWidth
+									size="sm"
+								>
+									<ChoiceItem value="off" className="flex-1">
+										{tSettings("autoCut.modeOff", "Off")}
+									</ChoiceItem>
+									<ChoiceItem value="speech" className="flex-1">
+										{tSettings("autoCut.modeSpeech", "Narrated")}
+									</ChoiceItem>
+									<ChoiceItem value="activity" className="flex-1">
+										{tSettings("autoCut.modeActivity", "Not narrated")}
+									</ChoiceItem>
+								</ChoiceGroup>
+								{onApplyAutoCut && (
+									<Button
+										variant="secondary"
+										size="sm"
+										onClick={onApplyAutoCut}
+										disabled={autoCutMode === "off" || isAutoCutting}
+									>
+										{isAutoCutting
+											? tSettings("autoCut.applying", "Cutting…")
+											: tSettings("autoCut.applyNow", "Apply now")}
+									</Button>
+								)}
+							</div>
 						</SettingsRow>
 					)}
 
