@@ -36,7 +36,8 @@ export function OnboardingController({
 	useEffect(() => {
 		if (!ready) return;
 		if (!user) {
-			setOpen(true);
+			// Builds without Recordly Auth cannot sign in, so don't block the app on it.
+			if (configured) setOpen(true);
 			return;
 		}
 		if (checked.current) return;
@@ -45,7 +46,7 @@ export function OnboardingController({
 			setStartWithPermissions(true);
 			setOpen(true);
 		} else if (!loadAppSetting<boolean>(SEEN_KEY)) setOpen(true);
-	}, [ready, user]);
+	}, [ready, user, configured]);
 
 	useEffect(
 		() =>
@@ -70,7 +71,7 @@ export function OnboardingController({
 			variant="wide"
 			open={open}
 			onOpenChange={(value) => {
-				if (!value && user) close();
+				if (!value && (user || !configured)) close();
 			}}
 			user={user}
 			configured={configured}

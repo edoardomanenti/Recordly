@@ -80,7 +80,7 @@ export function RecordlySignInDialog({
 	const awaitingSignIn = useRef(false);
 	const wide = onboarding || variant === "wide";
 	const [showPermissions, setShowPermissions] = useState(false);
-	const requiresSignIn = onboarding && !user;
+	const requiresSignIn = onboarding && !user && configured;
 	const permissions = onboarding && Boolean(user) && showPermissions;
 	const [email, setEmail] = useState("");
 	const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
