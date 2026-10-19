@@ -80,8 +80,10 @@ export function RecordlySignInDialog({
 	const awaitingSignIn = useRef(false);
 	const wide = onboarding || variant === "wide";
 	const [showPermissions, setShowPermissions] = useState(false);
-	const requiresSignIn = onboarding && !user && configured;
-	const permissions = onboarding && Boolean(user) && showPermissions;
+	// Builds without Recordly Auth can't sign in, so let onboarding continue without an account.
+	const canContinue = Boolean(user) || !configured;
+	const requiresSignIn = onboarding && !canContinue;
+	const permissions = onboarding && canContinue && showPermissions;
 	const [email, setEmail] = useState("");
 	const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 	const [busy, setBusy] = useState<string>();
@@ -133,8 +135,8 @@ export function RecordlySignInDialog({
 	}, [open]);
 
 	useEffect(() => {
-		if (open && startWithPermissions && user) setShowPermissions(true);
-	}, [open, startWithPermissions, user]);
+		if (open && startWithPermissions && canContinue) setShowPermissions(true);
+	}, [open, startWithPermissions, canContinue]);
 
 	useEffect(() => {
 		if (!open) return;
@@ -437,7 +439,7 @@ export function RecordlySignInDialog({
 					)}
 				</div>
 			</SignInBody>
-			{onboarding && user && (
+			{onboarding && canContinue && (
 				<OnboardingFooter>
 					<div className="flex w-full justify-end">
 						<Button
@@ -484,9 +486,9 @@ export function RecordlySignInDialog({
 						{onboarding ? (
 							<OnboardingLayout
 								stage={permissions ? "permissions" : "account"}
-								canViewPermissions={Boolean(user)}
+								canViewPermissions={canContinue}
 								onStageChange={(stage) =>
-									setShowPermissions(stage === "permissions" && Boolean(user))
+									setShowPermissions(stage === "permissions" && canContinue)
 								}
 							>
 								<AnimatePresence
@@ -508,7 +510,7 @@ export function RecordlySignInDialog({
 											<OnboardingPermissions
 												onBack={() => setShowPermissions(false)}
 												onFinish={() => {
-													if (user) onAuthenticated();
+													if (canContinue) onAuthenticated();
 												}}
 											/>
 										) : (

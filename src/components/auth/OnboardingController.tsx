@@ -58,7 +58,7 @@ export function OnboardingController({
 	);
 
 	const finish = () => {
-		if (!user) return;
+		if (!user && configured) return;
 		saveAppSetting(SEEN_KEY, true);
 		close();
 		void window.electronAPI.showRecordingHud();
