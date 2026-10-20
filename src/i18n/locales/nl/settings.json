@@ -267,7 +267,6 @@
 		"modeActivity": "Niet ingesproken",
 		"applyNow": "Nu toepassen",
 		"applying": "Bezig met knippen…",
-		"timelineEdited": "Automatisch knippen werkt alleen op een onbewerkte tijdlijn. Maak je bewerkingen ongedaan en probeer het opnieuw.",
 		"nothingToCut": "Automatisch knippen vond niets om te verwijderen.",
 		"applied": "Automatisch knippen heeft {{count}} dode momenten verwijderd ({{seconds}} s). Gebruik Ongedaan maken om ze terug te zetten.",
 		"failed": "Automatisch knippen mislukt: {{error}}"

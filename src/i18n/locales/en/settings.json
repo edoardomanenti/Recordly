@@ -267,7 +267,6 @@
 		"modeActivity": "Not narrated",
 		"applyNow": "Apply now",
 		"applying": "Cutting…",
-		"timelineEdited": "Auto-cut only works on an unedited timeline. Undo your edits and try again.",
 		"nothingToCut": "Auto-cut found nothing to remove.",
 		"applied": "Auto-cut removed {{count}} dead moments ({{seconds}}s). Press Undo to restore them.",
 		"failed": "Auto-cut failed: {{error}}"

@@ -267,7 +267,6 @@
 		"modeActivity": "내레이션 없음",
 		"applyNow": "지금 적용",
 		"applying": "자르는 중…",
-		"timelineEdited": "자동 컷은 편집하지 않은 타임라인에서만 작동합니다. 편집을 실행 취소한 후 다시 시도하세요.",
 		"nothingToCut": "자동 컷이 제거할 구간을 찾지 못했습니다.",
 		"applied": "자동 컷이 빈 구간 {{count}}개({{seconds}}초)를 제거했습니다. 실행 취소로 되돌릴 수 있습니다.",
 		"failed": "자동 컷 실패: {{error}}"

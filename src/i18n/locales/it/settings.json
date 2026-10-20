@@ -267,7 +267,6 @@
 		"modeActivity": "Non parlato",
 		"applyNow": "Applica ora",
 		"applying": "Taglio in corso…",
-		"timelineEdited": "Il taglio automatico funziona solo su una timeline non ancora modificata. Annulla le modifiche e riprova.",
 		"nothingToCut": "Il taglio automatico non ha trovato nulla da rimuovere.",
 		"applied": "Il taglio automatico ha rimosso {{count}} momenti morti ({{seconds}}s). Premi Annulla per ripristinarli.",
 		"failed": "Taglio automatico non riuscito: {{error}}"

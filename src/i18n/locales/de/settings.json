@@ -267,7 +267,6 @@
 		"modeActivity": "Ohne Kommentar",
 		"applyNow": "Jetzt anwenden",
 		"applying": "Wird geschnitten…",
-		"timelineEdited": "Automatischer Schnitt funktioniert nur bei einer unbearbeiteten Zeitleiste. Mache deine Änderungen rückgängig und versuche es erneut.",
 		"nothingToCut": "Der automatische Schnitt hat nichts zum Entfernen gefunden.",
 		"applied": "Automatischer Schnitt hat {{count}} tote Momente entfernt ({{seconds}} s). Mit Rückgängig stellst du sie wieder her.",
 		"failed": "Automatischer Schnitt fehlgeschlagen: {{error}}"

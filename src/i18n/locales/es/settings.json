@@ -267,7 +267,6 @@
 		"modeActivity": "Sin narración",
 		"applyNow": "Aplicar ahora",
 		"applying": "Cortando…",
-		"timelineEdited": "El corte automático solo funciona en una línea de tiempo sin editar. Deshaz tus cambios e inténtalo de nuevo.",
 		"nothingToCut": "El corte automático no encontró nada que quitar.",
 		"applied": "El corte automático quitó {{count}} momentos muertos ({{seconds}} s). Pulsa Deshacer para recuperarlos.",
 		"failed": "El corte automático falló: {{error}}"

@@ -1,5 +1,11 @@
-import { closeClipGaps } from "./clipSequence";
-import type { ClipRegion, CursorTelemetryPoint } from "./types";
+import { packClipSequence } from "./clipSequence";
+import {
+	type ClipRegion,
+	type CursorTelemetryPoint,
+	getClipSourceEndMs,
+	getClipSourceStartMs,
+	sortClipRegions,
+} from "./types";
 
 /**
  * Automatic cutting of a fresh recording.
@@ -139,33 +145,41 @@ export function computeAutoCutRemovals(options: {
 }
 
 /**
- * Build the clips that keep everything but `removals` from a full-length track.
- * `split` holds the kept clips still at their original positions and `packed` the
- * same clips (same ids) with the gaps closed, so effects can ripple from one to the other.
+ * Cut `removals` (source time) out of the existing clips, keeping their order,
+ * speed and audio settings. `split` holds the surviving pieces still at their
+ * original timeline positions and `packed` the same pieces (same ids) with the
+ * gaps closed, so effects can ripple from one to the other.
  */
-export function buildAutoCutClips(
+export function applyAutoCutToClips(
+	clips: ClipRegion[],
 	removals: TimeSpan[],
-	totalMs: number,
 	nextClipId: () => string,
-): { split: ClipRegion[]; packed: ClipRegion[] } {
-	const split = subtractSpans([{ startMs: 0, endMs: totalMs }], removals).map((span) => ({
-		id: nextClipId(),
-		startMs: span.startMs,
-		endMs: span.endMs,
-		sourceStartMs: span.startMs,
-		speed: 1,
-	}));
-	return { split, packed: closeClipGaps(split) };
-}
-
-/** True while the timeline is still the untouched single full-length clip. */
-export function isUneditedFullTrack(clips: ClipRegion[], totalMs: number): boolean {
-	if (clips.length !== 1) return false;
-	const [clip] = clips;
-	return (
-		clip.speed === 1 &&
-		clip.startMs === 0 &&
-		(clip.sourceStartMs ?? 0) === 0 &&
-		Math.abs(clip.endMs - totalMs) <= 1
-	);
+): { split: ClipRegion[]; packed: ClipRegion[]; changed: boolean } {
+	let changed = false;
+	const split = sortClipRegions(clips).flatMap((clip) => {
+		const speed = Number.isFinite(clip.speed) && clip.speed > 0 ? clip.speed : 1;
+		const sourceStartMs = getClipSourceStartMs(clip);
+		const sourceEndMs = getClipSourceEndMs(clip);
+		const pieces = subtractSpans([{ startMs: sourceStartMs, endMs: sourceEndMs }], removals);
+		if (
+			pieces.length === 1 &&
+			pieces[0].startMs === sourceStartMs &&
+			pieces[0].endMs === sourceEndMs
+		) {
+			return [clip];
+		}
+		changed = true;
+		return pieces.map((piece, index) => {
+			const startMs = clip.startMs + Math.round((piece.startMs - sourceStartMs) / speed);
+			return {
+				...clip,
+				// The first piece keeps the clip's identity so selection and effects follow it.
+				id: index === 0 ? clip.id : nextClipId(),
+				startMs,
+				endMs: startMs + Math.round((piece.endMs - piece.startMs) / speed),
+				sourceStartMs: piece.startMs,
+			};
+		});
+	});
+	return { split, packed: changed ? packClipSequence(split) : clips, changed };
 }

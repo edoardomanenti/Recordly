@@ -1,13 +1,9 @@
 import { type MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "@/components/ui/toast";
-import {
-	type AutoCutMode,
-	buildAutoCutClips,
-	computeAutoCutRemovals,
-	isUneditedFullTrack,
-} from "../autoCut";
+import { type AutoCutMode, applyAutoCutToClips, computeAutoCutRemovals } from "../autoCut";
 import { rippleRegionAnchors, rippleRegions } from "../clipSequence";
 import type { useTimelineState } from "../state/useTimelineState";
+import { getClipSourceEndMs, getClipSourceStartMs } from "../types";
 
 type Translate = (key: string, fallback?: string, vars?: Record<string, string | number>) => string;
 
@@ -36,24 +32,14 @@ export function useFreshRecordingAutoCut(input: Input) {
 	latest.current = input;
 
 	const runAutoCut = useCallback(
-		async (cutMode: AutoCutMode, options: { fromUser: boolean }) => {
+		async (cutMode: AutoCutMode) => {
 			const sourcePath = latest.current.videoSourcePath;
 			const totalMs = Math.round(latest.current.duration * 1000);
 			if (cutMode === "off" || !sourcePath || totalMs <= 0 || busyRef.current) return;
-			const isUnedited = () =>
+			const hasClips = () =>
 				latest.current.clipInitializedRef.current &&
-				isUneditedFullTrack(latest.current.timeline.clipRegions, totalMs);
-			if (!isUnedited()) {
-				if (options.fromUser) {
-					toast.info(
-						t(
-							"settings.autoCut.timelineEdited",
-							"Auto-cut only works on an unedited timeline. Undo your edits and try again.",
-						),
-					);
-				}
-				return;
-			}
+				latest.current.timeline.clipRegions.length > 0;
+			if (!hasClips()) return;
 
 			busyRef.current = true;
 			setIsAutoCutting(true);
@@ -69,8 +55,8 @@ export function useFreshRecordingAutoCut(input: Input) {
 						: Promise.resolve(null),
 				]);
 				if (!detection.success) throw new Error(detection.error || "Detection failed");
-				// The user may have switched recordings or started editing meanwhile.
-				if (latest.current.videoSourcePath !== sourcePath || !isUnedited()) return;
+				// The user may have switched recordings meanwhile.
+				if (latest.current.videoSourcePath !== sourcePath || !hasClips()) return;
 
 				const removals = computeAutoCutRemovals({
 					mode: cutMode,
@@ -81,20 +67,21 @@ export function useFreshRecordingAutoCut(input: Input) {
 				console.info(
 					`[auto-cut] ${cutMode}: ${detection.intervals?.length ?? 0} detected stretches, ${removals.length} cuts`,
 				);
-				if (removals.length === 0) {
+				// Cut inside the clips already on the timeline, keeping the user's edits.
+				const current = latest.current;
+				const before = current.timeline.clipRegions;
+				const { split, packed, changed } = applyAutoCutToClips(
+					before,
+					removals,
+					() => `clip-${current.nextClipIdRef.current++}`,
+				);
+				if (!changed) {
 					toast.info(
 						t("settings.autoCut.nothingToCut", "Auto-cut found nothing to remove."),
 					);
 					return;
 				}
-
-				const current = latest.current;
-				const { split, packed } = buildAutoCutClips(
-					removals,
-					totalMs,
-					() => `clip-${current.nextClipIdRef.current++}`,
-				);
-				// The full track is gone, so it must no longer stretch with the duration.
+				// A cut full track must no longer stretch with the duration.
 				current.autoFullTrackClipIdRef.current = null;
 				current.autoFullTrackClipEndMsRef.current = null;
 				current.timeline.setSelectedClipId(null);
@@ -107,14 +94,23 @@ export function useFreshRecordingAutoCut(input: Input) {
 					rippleRegionAnchors(regions, split, packed),
 				);
 
-				const removedSeconds = Math.round(
-					removals.reduce((sum, span) => sum + span.endMs - span.startMs, 0) / 1000,
-				);
+				const timelineMs = (clips: typeof before) =>
+					clips.reduce((sum, clip) => sum + clip.endMs - clip.startMs, 0);
+				const removedSeconds = Math.round((timelineMs(before) - timelineMs(packed)) / 1000);
 				toast.success(
 					t(
 						"settings.autoCut.applied",
 						"Auto-cut removed {{count}} dead moments ({{seconds}}s). Press Undo to restore them.",
-						{ count: removals.length, seconds: removedSeconds },
+						{
+							count: removals.filter((cut) =>
+								before.some(
+									(clip) =>
+										cut.startMs < getClipSourceEndMs(clip) &&
+										cut.endMs > getClipSourceStartMs(clip),
+								),
+							).length,
+							seconds: removedSeconds,
+						},
 					),
 				);
 			} catch (error) {
@@ -138,7 +134,7 @@ export function useFreshRecordingAutoCut(input: Input) {
 		if (!pendingPath || loading || !isPreviewReady || duration <= 0) return;
 		if (pendingPath !== videoSourcePath || !input.clipInitializedRef.current) return;
 		input.pendingFreshRecordingAutoCutPathRef.current = null;
-		void runAutoCut(mode, { fromUser: false });
+		void runAutoCut(mode);
 	}, [
 		loading,
 		isPreviewReady,
@@ -152,7 +148,7 @@ export function useFreshRecordingAutoCut(input: Input) {
 	]);
 
 	const applyAutoCut = useCallback(() => {
-		void runAutoCut(latest.current.mode, { fromUser: true });
+		void runAutoCut(latest.current.mode);
 	}, [runAutoCut]);
 
 	return { applyAutoCut, isAutoCutting };

@@ -267,7 +267,6 @@
 		"modeActivity": "Sans commentaire",
 		"applyNow": "Appliquer maintenant",
 		"applying": "Découpage…",
-		"timelineEdited": "La coupe automatique ne fonctionne que sur une timeline non modifiée. Annulez vos modifications et réessayez.",
 		"nothingToCut": "La coupe automatique n’a rien trouvé à supprimer.",
 		"applied": "La coupe automatique a supprimé {{count}} temps morts ({{seconds}} s). Utilisez Annuler pour les restaurer.",
 		"failed": "Échec de la coupe automatique : {{error}}"

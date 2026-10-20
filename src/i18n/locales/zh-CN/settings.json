@@ -267,7 +267,6 @@
 		"modeActivity": "无旁白",
 		"applyNow": "立即应用",
 		"applying": "正在剪辑…",
-		"timelineEdited": "自动剪辑仅适用于未编辑的时间线。请撤销编辑后重试。",
 		"nothingToCut": "自动剪辑没有找到可移除的内容。",
 		"applied": "自动剪辑移除了 {{count}} 个空闲片段（{{seconds}} 秒）。按撤销可恢复。",
 		"failed": "自动剪辑失败：{{error}}"

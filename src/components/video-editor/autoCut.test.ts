@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-	buildAutoCutClips,
-	computeAutoCutRemovals,
-	findCursorActivitySpans,
-	isUneditedFullTrack,
-} from "./autoCut";
+import { applyAutoCutToClips, computeAutoCutRemovals, findCursorActivitySpans } from "./autoCut";
 import { rippleRegions } from "./clipSequence";
 import type { CursorTelemetryPoint } from "./types";
 
@@ -127,34 +122,67 @@ describe("findCursorActivitySpans", () => {
 	});
 });
 
-describe("buildAutoCutClips", () => {
-	it("packs the kept footage and lets effects ripple from the split clips", () => {
-		let id = 1;
-		const { split, packed } = buildAutoCutClips(
+describe("applyAutoCutToClips", () => {
+	const ids = () => {
+		let id = 10;
+		return () => `clip-${id++}`;
+	};
+
+	it("cuts a full track and lets effects ripple from the split clips", () => {
+		const { split, packed, changed } = applyAutoCutToClips(
+			[{ id: "clip-1", startMs: 0, endMs: 10_000, speed: 1 }],
 			[
 				{ startMs: 0, endMs: 2_000 },
 				{ startMs: 5_000, endMs: 7_000 },
 			],
-			10_000,
-			() => `clip-${id++}`,
+			ids(),
 		);
+		expect(changed).toBe(true);
 		expect(packed).toEqual([
 			{ id: "clip-1", startMs: 0, endMs: 3_000, sourceStartMs: 2_000, speed: 1 },
-			{ id: "clip-2", startMs: 3_000, endMs: 6_000, sourceStartMs: 7_000, speed: 1 },
+			{ id: "clip-10", startMs: 3_000, endMs: 6_000, sourceStartMs: 7_000, speed: 1 },
 		]);
 		// A zoom over 7.5s..8.5s of the original recording follows its footage.
 		expect(
 			rippleRegions([{ id: "zoom-1", startMs: 7_500, endMs: 8_500 }], split, packed),
 		).toEqual([{ id: "zoom-1", startMs: 3_500, endMs: 4_500 }]);
 	});
-});
 
-describe("isUneditedFullTrack", () => {
-	it("recognizes the untouched full-length clip only", () => {
-		const full = { id: "clip-1", startMs: 0, endMs: 10_000, speed: 1 };
-		expect(isUneditedFullTrack([full], 10_000)).toBe(true);
-		expect(isUneditedFullTrack([{ ...full, endMs: 8_000 }], 10_000)).toBe(false);
-		expect(isUneditedFullTrack([{ ...full, speed: 2 }], 10_000)).toBe(false);
-		expect(isUneditedFullTrack([full, { ...full, id: "clip-2" }], 10_000)).toBe(false);
+	it("cuts inside an already edited timeline, keeping order, speed and audio settings", () => {
+		const { packed } = applyAutoCutToClips(
+			[
+				// Moved to the front: plays source 6s..10s at 2x.
+				{
+					id: "clip-2",
+					startMs: 0,
+					endMs: 2_000,
+					sourceStartMs: 6_000,
+					speed: 2,
+					muted: true,
+				},
+				{ id: "clip-1", startMs: 2_000, endMs: 5_000, sourceStartMs: 0, speed: 1 },
+			],
+			[{ startMs: 7_000, endMs: 8_000 }],
+			ids(),
+		);
+		expect(packed).toEqual([
+			{ id: "clip-2", startMs: 0, endMs: 500, sourceStartMs: 6_000, speed: 2, muted: true },
+			{
+				id: "clip-10",
+				startMs: 500,
+				endMs: 1_500,
+				sourceStartMs: 8_000,
+				speed: 2,
+				muted: true,
+			},
+			{ id: "clip-1", startMs: 1_500, endMs: 4_500, sourceStartMs: 0, speed: 1 },
+		]);
+	});
+
+	it("leaves clips untouched when nothing dead falls inside them", () => {
+		const clips = [{ id: "clip-1", startMs: 0, endMs: 3_000, sourceStartMs: 2_000, speed: 1 }];
+		const result = applyAutoCutToClips(clips, [{ startMs: 0, endMs: 1_800 }], ids());
+		expect(result.changed).toBe(false);
+		expect(result.packed).toBe(clips);
 	});
 });
