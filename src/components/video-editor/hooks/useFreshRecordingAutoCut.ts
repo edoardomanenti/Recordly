@@ -57,6 +57,7 @@ export function useFreshRecordingAutoCut(input: Input) {
 
 			busyRef.current = true;
 			setIsAutoCutting(true);
+			toast.info(t("settings.autoCut.applying", "Cutting…"));
 			try {
 				const [detection, telemetry] = await Promise.all([
 					window.electronAPI.detectAutoCutIntervals({
@@ -77,12 +78,13 @@ export function useFreshRecordingAutoCut(input: Input) {
 					intervals: detection.intervals ?? [],
 					cursorTelemetry: telemetry?.success ? telemetry.samples : [],
 				});
+				console.info(
+					`[auto-cut] ${cutMode}: ${detection.intervals?.length ?? 0} detected stretches, ${removals.length} cuts`,
+				);
 				if (removals.length === 0) {
-					if (options.fromUser) {
-						toast.info(
-							t("settings.autoCut.nothingToCut", "Auto-cut found nothing to remove."),
-						);
-					}
+					toast.info(
+						t("settings.autoCut.nothingToCut", "Auto-cut found nothing to remove."),
+					);
 					return;
 				}
 

@@ -259,7 +259,12 @@ export function registerCaptionHandlers() {
 		"detect-auto-cut-intervals",
 		async (_, options: { videoPath: string; mode: AutoCutDetectionMode }) => {
 			try {
-				return { success: true, intervals: await detectAutoCutIntervals(options) };
+				const intervals = await detectAutoCutIntervals(options);
+				console.log(
+					`[auto-cut] ${options.mode}: ${intervals.length} stretches detected in ${options.videoPath}`,
+					intervals,
+				);
+				return { success: true, intervals };
 			} catch (error) {
 				console.error("Failed to detect auto-cut intervals:", error);
 				return {
